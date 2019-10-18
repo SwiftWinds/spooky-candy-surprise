@@ -1,5 +1,10 @@
 #include <Arduino.h>
 
+#define LOWER_MOTOR_PIN 5
+#define UPPER_MOTOR_PIN 6
+#define TOP_ENCODER_PIN 4
+#define BOTTOM_ENCODER_PIN 3
+
 void setup() {
     // set pinMode of pin 12 and 8 to OUTPUT
     pinMode(12, OUTPUT);
