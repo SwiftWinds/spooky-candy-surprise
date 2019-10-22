@@ -6,9 +6,11 @@
 #define BOTTOM_ENCODER_PIN 3
 
 void setup() {
-    // set pinMode of pin 12 and 8 to OUTPUT
-    pinMode(12, OUTPUT);
-    pinMode(8, OUTPUT);
+    // 
+    pinMode(LOWER_MOTOR_PIN, OUTPUT);
+    pinMode(UPPER_MOTOR_PIN, OUTPUT);
+
+    //
 }
 
 void loop() {
