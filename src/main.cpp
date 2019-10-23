@@ -8,14 +8,14 @@
 
 // TODO: define flashlight, emergency stop button, and light sensor pins
 
-const byte MOTOR_PINS[] = { LOWER_MOTOR_PIN, UPPER_MOTOR_PIN };
-const vexMotor lowerMotor, upperMotor;
-const vexMotor motors[] = { lowerMotor, upperMotor };
+const byte MOTOR_PINS[] = {LOWER_MOTOR_PIN, UPPER_MOTOR_PIN};
+vexMotor lowerMotor, upperMotor;
+vexMotor motors[] = {lowerMotor, upperMotor};
 
 void setup() {
     // initiate motors to their respective pins
-    for (int i = 0; i++; i < sizeof(motors)) {
-       motors[i].attach(MOTOR_PINS[i]);
+    for (uint8_t i = 0; i < (uint8_t) sizeof(motors); i++) {
+        motors[i].attach(MOTOR_PINS[i]);
     }
 
     //
