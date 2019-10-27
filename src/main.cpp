@@ -19,8 +19,14 @@ void moveUp() {
 }
 
 void moveDown() {
-    lowerMotor.write(255);
-    upperMotor.write(-255);
+    lowerMotor.write(-255);
+    upperMotor.write(255);
+}
+
+void stop() {
+    for (vexMotor motor : motors) {
+        motor.write(0);
+    }
 }
 
 void setup() {
