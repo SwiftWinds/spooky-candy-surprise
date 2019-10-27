@@ -13,14 +13,14 @@ const byte MOTOR_PINS[] = {LOWER_MOTOR_PIN, UPPER_MOTOR_PIN};
 vexMotor lowerMotor, upperMotor;
 vexMotor motors[] = {lowerMotor, upperMotor};
 
-void moveUp() {
-    lowerMotor.write(255);
-    upperMotor.write(-255);
+void moveUp(byte speed = 255) {
+    lowerMotor.write(speed);
+    upperMotor.write(-speed);
 }
 
-void moveDown() {
-    lowerMotor.write(-255);
-    upperMotor.write(255);
+void moveDown(byte speed = 255) {
+    lowerMotor.write(-speed);
+    upperMotor.write(speed);
 }
 
 void stop() {
