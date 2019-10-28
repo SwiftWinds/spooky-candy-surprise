@@ -80,4 +80,4 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(${PROJECT_NAME} ${SRC_LIST} src/Encoder.cpp src/Encoder.h src/Hand.h src/Hand.cpp)
+add_executable(${PROJECT_NAME} ${SRC_LIST})
