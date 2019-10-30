@@ -2,7 +2,7 @@
 #include <vexMotor.h>
 #include <Encoder.h>
 
-#define LIGHT_SENSOR_PIN
+#define LIGHT_SENSOR_PIN 9
 #define BUTTON_PIN 8
 #define FLASHLIGHT 7
 #define UPPER_MOTOR_PIN 6
@@ -10,7 +10,6 @@
 #define TOP_ENCODER_PIN 4
 #define BOTTOM_ENCODER_PIN 3
 
-#define JOY_X 0
 #define JOY_Y 1
 
 #define BAUD_RATE 9600
