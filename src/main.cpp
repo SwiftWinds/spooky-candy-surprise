@@ -22,7 +22,7 @@ vexMotor lowerMotor, upperMotor;
 vexMotor motors[] = {lowerMotor, upperMotor};
 Encoder encoder(BOTTOM_ENCODER_PIN, TOP_ENCODER_PIN);
 
-long prevPos, prevX, prevY, origPos = -999;
+long prevPos, prevY, origPos = -999;
 bool isCallibratingOrigPos = true;
 
 void moveUp(byte speed = 255) {
@@ -106,5 +106,4 @@ void loop() {
             Serial.println(String("origPos set to: ") + origPos);
         }
     }
-
 }
