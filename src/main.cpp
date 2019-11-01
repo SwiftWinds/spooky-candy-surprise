@@ -3,7 +3,7 @@
 #include <Encoder.h>
 #include <Servo.h>
 
-#define LIGHT_SENSOR_PIN 10
+#define LIGHT_SENSOR_PIN A2
 #define HAND_SERVO_PIN 9
 #define BUTTON_PIN 8
 #define FLASHLIGHT_PIN 7
@@ -12,14 +12,14 @@
 #define TOP_ENCODER_PIN 4
 #define BOTTOM_ENCODER_PIN 3
 
-#define JOY_Y 1
+#define JOY_Y A1
 
 #define BAUD_RATE 9600
 
 #define BUTTON_DELAY 30
 #define MOTOR_DIST 424
 #define HAND_SERVO_ROTATION 90
-#define 
+#define LIGHT_THRESHOLD 80
 
 vexMotor lowerMotor, upperMotor;
 vexMotor motors[] = {lowerMotor, upperMotor};
@@ -38,7 +38,7 @@ enum state {
     movingHandDown
 };
 
-state _state = calibratingOrigPos;
+state _state = waitLightThreshold;
 
 state getState() {
     return _state;
@@ -64,7 +64,7 @@ void moveDown(byte speed = 255) {
     // Serial.println(String("moving down at ") + speed + " velocity...");
 }
 
-void stop() {
+void stopMotors() {
     for (vexMotor motor : motors) {
         motor.write(0);
     }
@@ -84,6 +84,7 @@ void setup() {
 
     handServo.attach(HAND_SERVO_PIN);
 
+    pinMode(LIGHT_SENSOR_PIN, INPUT);
     pinMode(BUTTON_PIN, INPUT);
     pinMode(FLASHLIGHT_PIN, OUTPUT);
     digitalWrite(FLASHLIGHT_PIN, HIGH);
@@ -138,12 +139,12 @@ void loop() {
             break;
         }
         case waitLightThreshold:
-            Serial.println(String("button value: ") + digitalRead(BUTTON_PIN));
-            if ()
+            Serial.println(String("light value: ") + analogRead(LIGHT_SENSOR_PIN));
+//            if ()
             break;
         case movingHandUp:
             if (encoder.read() - origPos >= HAND_SERVO_ROTATION) {
-
+                stopMotors();
             }
             break;
         case closingHand:
@@ -162,5 +163,5 @@ void loop() {
     // open hand
     // move hand down -x degrees of rotation
 //    delay(500);
-//    stop();
+//    stopMotors();
 }
