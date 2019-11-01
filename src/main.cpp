@@ -204,7 +204,6 @@ void loop() {
             delay(50);
             break;
         }
-
     }
     // wait until light level below threshold
     // move hand up x degrees of rotation
