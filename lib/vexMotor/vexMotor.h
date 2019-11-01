@@ -1,10 +1,10 @@
-/****************************************************************
+/*
 * Core header file for all the various vexMotor functions.
 * 
 * 22 Dec 2014- Brian Huang, SparkFun Electronics
 * 
 * Code developed in Arduino 1.0.6
-/***************************************************************/
+*/
 
 #ifndef vexMotor_h
 #define vexMotor_h

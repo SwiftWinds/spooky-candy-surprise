@@ -38,7 +38,7 @@ enum state {
     movingHandDown
 };
 
-state _state = waitLightThreshold;
+state _state = calibratingOrigPos;
 
 state getState() {
     return _state;
@@ -77,6 +77,32 @@ void initMotors() {
     // Serial.println("Initializing motors...");
 }
 
+bool buttonPressed() {
+    bool wasInLoop = false;
+    boolean lastButton = LOW;
+    boolean currentButton = digitalRead(BUTTON_PIN);
+    Serial.println(String("lastButton: ") + lastButton + ", currentButton: " + currentButton);
+    while (lastButton != currentButton) {
+        Serial.println(String("In loop; before delay with lastButton: ") + lastButton + ", currentButton: " +
+                       currentButton);
+        wasInLoop = true;
+        delay(BUTTON_DELAY);
+        Serial.println(
+                String("after delay with lastButton: ") + lastButton + ", currentButton: " + currentButton);
+        lastButton = currentButton;
+        currentButton = digitalRead(BUTTON_PIN);
+    }
+    if (wasInLoop) {
+        Serial.println(
+                String("exited loop with lastButton: ") + lastButton + ", currentButton: " + currentButton);
+        return true;
+    } else {
+        Serial.println(
+                String("failed loop because lastButton: ") + lastButton + ", currentButton: " + currentButton);
+        return false;
+    }
+}
+
 void setup() {
     Serial.begin(BAUD_RATE);
 
@@ -111,50 +137,54 @@ void loop() {
                 }
             }
 
-            bool wasInLoop = false;
-            boolean lastButton = LOW;
-            boolean currentButton = digitalRead(BUTTON_PIN);
-            Serial.println(String("lastButton: ") + lastButton + ", currentButton: " + currentButton);
-            while (lastButton != currentButton) {
-                Serial.println(String("In loop; before delay with lastButton: ") + lastButton + ", currentButton: " +
-                               currentButton);
-                wasInLoop = true;
-                delay(BUTTON_DELAY);
-                Serial.println(
-                        String("after delay with lastButton: ") + lastButton + ", currentButton: " + currentButton);
-                lastButton = currentButton;
-                currentButton = digitalRead(BUTTON_PIN);
-            }
-            if (wasInLoop) {
-                Serial.println(
-                        String("exited loop with lastButton: ") + lastButton + ", currentButton: " + currentButton);
+            if (buttonPressed()) {
                 origPos = currPos;
                 setState(waitLightThreshold);
 
                 Serial.println(String("origPos set to: ") + origPos);
-            } else {
-                Serial.println(
-                        String("failed loop because lastButton: ") + lastButton + ", currentButton: " + currentButton);
             }
             break;
         }
-        case waitLightThreshold:
+        case waitLightThreshold: {
             Serial.println(String("light value: ") + analogRead(LIGHT_SENSOR_PIN));
-//            if ()
-            break;
-        case movingHandUp:
-            if (encoder.read() - origPos >= HAND_SERVO_ROTATION) {
-                stopMotors();
+            if (analogRead(LIGHT_SENSOR_PIN) > LIGHT_THRESHOLD) {
+                moveUp();
+                setState(movingHandUp);
             }
             break;
-        case closingHand:
+        }
+        case movingHandUp: {
+            if (encoder.read() - origPos >= MOTOR_DIST) {
+                stopMotors();
+                setState(closingHand);
+            }
             break;
-        case waitOpenHandButtonPress:
+        }
+        case closingHand: {
+            handServo.write(HAND_SERVO_ROTATION);
+            setState(waitOpenHandButtonPress);
             break;
-        case openingHand:
+        }
+        case waitOpenHandButtonPress: {
+            if (buttonPressed()) {
+                setState(openingHand);
+            }
             break;
-        case movingHandDown:
+        }
+        case openingHand: {
+            handServo.write(0);
+            moveDown();
+            setState(movingHandDown);
             break;
+        }
+        case movingHandDown: {
+
+            if (encoder.read() == origPos) {
+                stopMotors();
+                setState(waitLightThreshold);
+            }
+            break;
+        }
     }
     // wait until light level below threshold
     // move hand up x degrees of rotation
@@ -162,6 +192,4 @@ void loop() {
     // wait until button press
     // open hand
     // move hand down -x degrees of rotation
-//    delay(500);
-//    stopMotors();
 }

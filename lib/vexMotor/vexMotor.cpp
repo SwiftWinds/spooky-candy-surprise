@@ -1,4 +1,4 @@
-/*******************************************************************
+/*
 * Main CPP for vexMotor library. Uses the Servo library and scales 
 * an input power (-255 to +255) to a pulse width for the VEX motor 
 * controller. 
@@ -8,7 +8,7 @@
 *
 * 22 Dec 2014 - Brian Huang, SparkFun Electronics
 * Code developed in Arduino 1.0.6
-/******************************************************************/
+*/
 
 #include "vexMotor.h"
 #include <avr/interrupt.h>
