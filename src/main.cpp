@@ -178,7 +178,6 @@ void loop() {
             break;
         }
         case movingHandDown: {
-
             if (encoder.read() == origPos) {
                 stopMotors();
                 setState(waitLightThreshold);
