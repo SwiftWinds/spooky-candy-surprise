@@ -147,7 +147,7 @@ void loop() {
         }
         case waitLightThreshold: {
             Serial.println(String("light value: ") + analogRead(LIGHT_SENSOR_PIN));
-            if (analogRead(LIGHT_SENSOR_PIN) > LIGHT_THRESHOLD) {
+            if (analogRead(LIGHT_SENSOR_PIN) >= LIGHT_THRESHOLD) {
                 moveUp();
                 setState(movingHandUp);
             }
