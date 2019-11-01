@@ -17,8 +17,9 @@
 #define BAUD_RATE 9600
 
 #define BUTTON_DELAY 30
-#define MOTOR_DIST 424
-#define HAND_SERVO_ROTATION 90
+#define MOTOR_DIST 410
+#define HAND_SERVO_OPEN 172
+#define HAND_SERVO_CLOSE 64
 #define LIGHT_THRESHOLD 80
 
 vexMotor lowerMotor, upperMotor;
@@ -28,6 +29,7 @@ Encoder encoder(BOTTOM_ENCODER_PIN, TOP_ENCODER_PIN);
 Servo handServo;
 
 long prevPos, prevY, origPos = -999;
+int16_t posHand = HAND_SERVO_OPEN;
 enum state {
     calibratingOrigPos,
     waitLightThreshold,
@@ -35,7 +37,8 @@ enum state {
     closingHand,
     waitOpenHandButtonPress,
     openingHand,
-    movingHandDown
+    movingHandDown,
+    calibratingHand
 };
 
 state _state = calibratingOrigPos;
@@ -109,6 +112,7 @@ void setup() {
     initMotors();
 
     handServo.attach(HAND_SERVO_PIN);
+    handServo.write(HAND_SERVO_OPEN);
 
     pinMode(LIGHT_SENSOR_PIN, INPUT);
     pinMode(BUTTON_PIN, INPUT);
@@ -122,7 +126,7 @@ void loop() {
             const long currPos = encoder.read();
             if (currPos != prevPos) {
                 prevPos = currPos;
-                // Serial.println(String("Encoder: ") + currPos);
+                Serial.println(String("Encoder: ") + currPos);
             }
 
             const long currY = analogRead(JOY_Y);
@@ -157,11 +161,13 @@ void loop() {
             if (encoder.read() - origPos >= MOTOR_DIST) {
                 stopMotors();
                 setState(closingHand);
+                Serial.println("Set state to closingHand!");
             }
             break;
         }
         case closingHand: {
-            handServo.write(HAND_SERVO_ROTATION);
+            Serial.println("Writing stuff to the hand servo");
+            handServo.write(HAND_SERVO_CLOSE);
             setState(waitOpenHandButtonPress);
             break;
         }
@@ -172,7 +178,7 @@ void loop() {
             break;
         }
         case openingHand: {
-            handServo.write(0);
+            handServo.write(HAND_SERVO_OPEN);
             moveDown();
             setState(movingHandDown);
             break;
@@ -184,6 +190,21 @@ void loop() {
             }
             break;
         }
+        case calibratingHand: {
+            const long actualY = map(analogRead(JOY_Y), 0, 1023, 255, -255);
+            if (actualY >= 128) {
+                Serial.println(String("Moving up because actualY: ") + actualY);
+                posHand++;
+            } else if (actualY <= -128) {
+                Serial.println(String("Moving down because actualY: ") + actualY);
+                posHand--;
+            }
+            handServo.write(posHand);
+            Serial.println(String("Hand servo: ") + posHand);
+            delay(50);
+            break;
+        }
+
     }
     // wait until light level below threshold
     // move hand up x degrees of rotation
